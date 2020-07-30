@@ -3,35 +3,43 @@
 echo "Welcome to gambling Simulator"
 
 #Intialization of variable 
-stakePerDay=100
+STAKE_PER_DAY=100
 betPerGame=1
-daysPlayed=0
+daysPlayed=1
 total=0
-echo "Stakes per day would be \$$stakePerDay"
+totalDays=30
+newStake=0
+
+echo "Stakes per day would be \$$STAKE_PER_DAY"
 echo "Bet to be placed per game will be \$$betPerGame"
 
-while (( $daysPlayed < 20 ))
-do
-	while (( $stakePerDay >50 && $stakePerDay < 150 ))
+function betPerDay()
+{
+	while (( $daysPlayed <= $totalDays ))
 	do
-		flip=$(( RANDOM % 2 ))
+		newStake=$(( $newStake + $STAKE_PER_DAY ))
+		minimumStake=$(( $newStake / 2 ))
+		maximumStake=$(( $newStake + $minimumStake ))
+		while (( $newStake > $minimumStake && $newStake < $maximumStake ))
+		do
+			flip=$(( RANDOM % 2 ))
 			if [ $flip -eq 1 ]
 			then
-				((stakePerDay++))
+				(( newStake++ ))
 			else
-				((stakePerDay--))
-			fi
-	done
-	total=$(( $total + $stakePerDay))
-	(( daysPlayed++ ))
-done
+				(( newStake-- ))
 
-echo "Total amount bet in the 20 days is \$$total"
-if [ $total -ge 2000 ]
-then
-	echo "You are in profit in last 20 days "
-	echo "Total profit is \$$(( $total - 2000 ))"
-else
-	echo "You are in loss in last 20 days "
-	echo "Total loss is \$$(( 2000 - $total ))"
-fi
+			fi
+		done
+		if [ $newStake -eq $maximumStake ]
+		then
+			echo "On Day $daysPlayed you have won by $minimumStake "
+		else
+			echo "On Day $daysPlayed you have loss by $minimumStake"
+		fi
+		(( daysPlayed++ ))
+	done
+}
+
+echo "********Daily win and loss ammount ******************"
+betPerDay

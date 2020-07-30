@@ -9,7 +9,10 @@ daysPlayed=1
 total=0
 totalDays=30
 newStake=0
-
+maxLost=0
+maxWon=0
+dayLost=0
+dayWon=0
 echo "Stakes per day would be \$$STAKE_PER_DAY"
 echo "Bet to be placed per game will be \$$betPerGame"
 
@@ -33,13 +36,24 @@ function betPerDay()
 		done
 		if [ $newStake -eq $maximumStake ]
 		then
-			echo "On Day $daysPlayed you have won by $minimumStake "
+			echo "Day $daysPlayed you have won by \$$minimumStake"
+			if [ $minimumStake -gt $maxWon ]
+			then
+				maxWon=$minimumStake
+				dayWon=$daysPlayed
+			fi
 		else
-			echo "On Day $daysPlayed you have loss by $minimumStake"
-		fi
+			echo "Day $dayPlayed you have lost by \$$minimumStake"
+			if [ $minimumStake -gt $maxLost ]
+			then
+				maxLost=$minimumStake
+				dayLost=$daysPlayed
+			fi
+	fi
 		(( daysPlayed++ ))
-	done
+done
+	echo "Day $dayWon is your luckiest day as you won \$$maxWon " 
+	echo "Day $dayLost is your unluckiest day as you have lost \$$maxLost"
 }
 
-echo "********Daily win and loss ammount ******************"
 betPerDay
